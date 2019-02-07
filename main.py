@@ -14,7 +14,7 @@ class KBTest(unittest.TestCase):
         alist = actual.split('\n')
         for e, a in zip(elist, alist):
             if e.lower() != a.rstrip().lower():
-                self.assertEquals('"{0}" ({1} lead spaces)'.format(e, len(e) - len(e.lstrip())), 
+                self.assertEqual('"{0}" ({1} lead spaces)'.format(e, len(e) - len(e.lstrip())),
                     '"{0}" ({1} lead spaces)'.format(a, len(a) - len(a.strip())))
 
     def test01(self):
@@ -23,6 +23,8 @@ class KBTest(unittest.TestCase):
         self.compare("Fact is not in the KB", actual)
         actual = self.KB.kb_explain(read.parse_input("rule: ((contains bowl flour) (contains bowl water)) -> (contains bowl wetFlour)"))
         self.compare("Rule is not in the KB", actual)
+
+
 
     def test02(self):
         # asserted

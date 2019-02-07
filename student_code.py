@@ -142,6 +142,80 @@ class KnowledgeBase(object):
         """
         ####################################################
         # Student code goes here
+        isFact = isinstance(fact_or_rule, Fact)
+        isRule = isinstance(fact_or_rule, Rule)
+        if not isFact and not isRule:
+            return False
+
+        #is it in the knowledge base
+        if isFact:
+            inKB = self._get_fact(fact_or_rule) in self.facts
+            fact_or_rule = self._get_fact(fact_or_rule)
+        else:
+            inKB = self._get_rule(fact_or_rule) in self.rules
+            fact_or_rule = self._get_rule(fact_or_rule)
+
+
+        if inKB:
+            s = self.kb_looper(fact_or_rule, 0)
+            return s[:-1]
+
+        elif isFact:
+            return "Fact is not in the KB"
+        else:
+            return "Rule is not in the KB"
+
+
+    def kb_looper(self, fact_or_rule, level):
+
+        isFact = isinstance(fact_or_rule, Fact)
+        isRule = isinstance(fact_or_rule, Rule)
+        isAsserted = fact_or_rule.asserted
+        s = ""
+
+        if isRule:
+            fact_or_rule = self._get_rule(fact_or_rule)
+        else:
+            fact_or_rule = self._get_fact(fact_or_rule)
+
+        for i in range(level):
+            s += " "
+
+        if isFact:
+            s += "fact: " + str(fact_or_rule.statement)
+
+        else:
+            lh = str(fact_or_rule.lhs[0])
+            for ls in fact_or_rule.lhs[1:]:
+                lh += ", " + str(ls)
+            s += "rule: " + "(" + lh + ")" + " -> " + str(fact_or_rule.rhs)
+
+        if isAsserted:
+            s += " ASSERTED"
+
+        s += "\n"
+
+        if fact_or_rule.supported_by:
+            intro = ""
+            indent = level + 2
+            for i in range(indent):
+                intro += " "
+            intro += "SUPPORTED BY \n";
+
+            nl = indent + 2
+
+            f = ""
+            for f_r in fact_or_rule.supported_by:
+                f += intro + self.kb_looper(f_r[0], nl) + self.kb_looper(f_r[1], nl)
+            return s + f
+        else:
+            return s
+
+
+
+
+
+
 
 
 class InferenceEngine(object):
